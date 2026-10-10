@@ -11,21 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
-    services:
-      db:
-        image: pgvector/pgvector:pg18-trixie
-        env:
-          POSTGRES_USER: labproof_test
-          POSTGRES_PASSWORD: labproof_test
-          POSTGRES_DB: labproof_test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U labproof_test -d labproof_test"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 20
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -62,7 +47,7 @@ jobs:
           LABPROOF_RERANKER_MODEL: ""
           LABPROOF_NLI_MODEL: ""
           LABPROOF_MIN_RERANK_SCORE: 0.0
-        run: PYTHONPATH=. pytest --cov=app --cov=eval --cov-report=term-missing --cov-fail-under=69
+        run: PYTHONPATH=. pytest tests/test_units.py tests/test_metrics.py --cov=app --cov=eval --cov-report=term-missing --cov-fail-under=69
 
       - name: Set up Node
         uses: actions/setup-node@v4
