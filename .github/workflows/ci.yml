@@ -44,7 +44,14 @@ jobs:
 
       - name: Install backend deps
         working-directory: backend
-        run: uv pip install -e ".[dev]"
+        run: |
+          # Try uv first, fall back to pip
+          if uv pip install -e ".[dev]"; then
+            echo "uv install succeeded"
+          else
+            echo "uv failed, falling back to pip"
+            pip install -e ".[dev]"
+          fi
 
       - name: Run ruff
         working-directory: backend
