@@ -28,7 +28,12 @@ import { ApiService, DocumentOut, IngestOut, StatsOut } from '../api.service';
         <button type="button" class="btn-secondary" (click)="fileInput.click()" [disabled]="uploading()">
           Choose PDF
         </button>
-        <span class="filename" *ngIf="selectedFile()">{{ selectedFile()!.name }}</span>
+        @if (selectedFile()) {
+          <span class="file-info">
+            <span class="filename">{{ selectedFile()!.name }}</span>
+            <span class="filesize">({{ formatFileSize(selectedFile()!.size) }})</span>
+          </span>
+        }
         <input type="text" [(ngModel)]="title" name="title" placeholder="Title" required [disabled]="uploading()">
         <input type="text" [(ngModel)]="sourceUrl" name="source_url" placeholder="Source URL (optional)" [disabled]="uploading()">
         <input type="text" [(ngModel)]="license" name="license" placeholder="License (optional)" [disabled]="uploading()">
@@ -98,7 +103,9 @@ import { ApiService, DocumentOut, IngestOut, StatsOut } from '../api.service';
     .upload-form { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
     .btn-secondary { padding: 0.5rem 1rem; background: #e0e0e0; border: none; border-radius: 4px; cursor: pointer; }
     .btn-secondary:hover { background: #d5d5d5; }
+    .file-info { display: flex; align-items: center; gap: 0.5rem; }
     .filename { font-size: 0.9rem; color: #666; }
+    .filesize { font-size: 0.85rem; color: #999; }
     .upload-form input[type="text"] { padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; min-width: 200px; }
     .btn-primary { padding: 0.5rem 1.5rem; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; }
     .btn-primary:disabled { background: #90caf9; cursor: not-allowed; }
@@ -142,8 +149,12 @@ export class DocumentsComponent implements OnInit {
   onFileSelect(e: Event) {
     const input = e.target as HTMLInputElement;
     if (input.files && input.files[0]) {
-      this.selectedFile.set(input.files[0]);
+      const file = input.files[0];
+      this.selectedFile.set(file);
       this.uploadError.set(null);
+      // Auto-fill title from filename (without .pdf extension)
+      const nameWithoutExt = file.name.replace(/\.pdf$/i, '');
+      this.title = nameWithoutExt;
     }
   }
 
@@ -180,5 +191,13 @@ export class DocumentsComponent implements OnInit {
       },
       error: () => this.deletingId.set(null)
     });
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 }
