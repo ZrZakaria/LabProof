@@ -62,7 +62,7 @@ jobs:
           LABPROOF_RERANKER_MODEL: ""
           LABPROOF_NLI_MODEL: ""
           LABPROOF_MIN_RERANK_SCORE: 0.0
-        run: pytest --cov=app --cov=eval --cov-report=term-missing --cov-fail-under=69
+        run: PYTHONPATH=. pytest --cov=app --cov=eval --cov-report=term-missing --cov-fail-under=69
 
       - name: Set up Node
         uses: actions/setup-node@v4
