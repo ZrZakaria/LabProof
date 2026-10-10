@@ -140,13 +140,21 @@ def test_upload_endpoint_validation(test_db, test_settings):
     assert resp.status_code in {201, 422, 500}
 
 
-def test_pdf_loader_extracts_pages():
+def test_pdf_loader_extract_pages():
     # Simple text-based PDF would need a real file; this is a smoke test for the function
     # We test that the function exists and handles empty input
+    pdf = (
+        b"%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n"
+        b"2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n"
+        b"3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] >>\nendobj\n"
+        b"xref\n0 4\n0000000000 65535 f\n0000000009 00000 n\n"
+        b"0000000058 00000 n\n0000000115 00000 n\n"
+        b"trailer\n<< /Size 4 /Root 1 0 R >>\nstartxref\n192\n%%EOF"
+    )
     try:
-        extract_pages(b"%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] >>\nendobj\nxref\n0 4\n0000000000 65535 f\n0000000009 00000 n\n0000000058 00000 n\n0000000115 00000 n\ntrailer\n<< /Size 4 /Root 1 0 R >>\nstartxref\n192\n%%EOF")
+        extract_pages(pdf)
     except EmptyDocumentError:
-        pass  # expected for minimal PDF with no text for minimal PDF
+        pass  # expected for minimal PDF with no text
 
 
 def test_health_endpoint(test_db, test_settings):

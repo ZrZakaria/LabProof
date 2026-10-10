@@ -32,4 +32,6 @@ class NoopReranker:
     """Used when reranking is disabled (LABPROOF_RERANKER_MODEL='') and in tests."""
 
     def rerank(self, question: str, candidates: list[Candidate]) -> list[Candidate]:
+        for c in candidates:
+            c.rerank_score = 0.0
         return candidates

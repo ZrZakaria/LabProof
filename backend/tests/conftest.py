@@ -1,4 +1,6 @@
 """Pytest fixtures with deterministic fakes for unit tests."""
+import json
+
 import pytest
 
 from app.llm.ollama_client import ChatModel, Embedder
@@ -78,10 +80,6 @@ class OverlapScorer:
             else:
                 out.append(len(prem_words & hyp_words) / len(hyp_words))
         return out
-
-
-# Import json at module level for FakeLLM
-import json
 
 
 @pytest.fixture

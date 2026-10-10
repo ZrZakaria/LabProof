@@ -1,7 +1,7 @@
 """Unit tests for chunker, RRF, metrics, citation normalisation, and verification statuses."""
 import pytest
 
-from app.generation.answer import generate_draft
+from app.generation.answer import GenerationError, generate_draft
 from app.generation.prompts import build_context
 from app.ingest.chunker import chunk_pages, is_heading, split_sentences
 from app.models import AnswerSentence, DraftAnswer, DraftSentence
@@ -120,7 +120,7 @@ def test_generate_draft_retries_then_succeeds(invalid_json_llm, fake_embedder):
                        page_start=1, page_end=1, section="S", content="Annual certification required.",
                        suspicious=False)]
     ctx, _ = build_context(cands)
-    with pytest.raises(Exception):  # GenerationError after retries
+    with pytest.raises(GenerationError):
         generate_draft(invalid_json_llm, "test", ctx, retries=1)
 
 def test_generate_draft_gives_up_after_retries(invalid_json_llm, fake_embedder):
@@ -128,7 +128,7 @@ def test_generate_draft_gives_up_after_retries(invalid_json_llm, fake_embedder):
                        page_start=1, page_end=1, section="S", content="Annual certification required.",
                        suspicious=False)]
     ctx, _ = build_context(cands)
-    with pytest.raises(Exception):
+    with pytest.raises(GenerationError):
         generate_draft(invalid_json_llm, "test", ctx, retries=0)
 
 
@@ -139,7 +139,9 @@ def test_verify_supported(overlap_scorer):
     ])
     cands = { "S1": Candidate(chunk_id=1, document_id=1, title="Doc", source_url=None,
                               page_start=23, page_end=23, section="BSCs",
-                              content="BSCs must be certified when installed, whenever they are moved and at least annually.",
+                              content=(
+                                  "BSCs must be certified when installed, "
+                                  "whenever they are moved and at least annually."),
                               suspicious=False)}
     result = verify(draft, cands, overlap_scorer, threshold=0.3)
     assert result[0].status == "supported"
@@ -150,7 +152,9 @@ def test_verify_unsupported(overlap_scorer):
     ])
     cands = { "S1": Candidate(chunk_id=1, document_id=1, title="Doc", source_url=None,
                               page_start=23, page_end=23, section="BSCs",
-                              content="BSCs must be certified when installed, whenever they are moved and at least annually.",
+                              content=(
+                                  "BSCs must be certified when installed, "
+                                  "whenever they are moved and at least annually."),
                               suspicious=False)}
     result = verify(draft, cands, overlap_scorer, threshold=0.6)
     assert result[0].status == "unsupported"
@@ -161,7 +165,9 @@ def test_verify_uncited(overlap_scorer):
     ])
     cands = { "S1": Candidate(chunk_id=1, document_id=1, title="Doc", source_url=None,
                               page_start=23, page_end=23, section="BSCs",
-                              content="BSCs must be certified when installed, whenever they are moved and at least annually.",
+                              content=(
+                                  "BSCs must be certified when installed, "
+                                  "whenever they are moved and at least annually."),
                               suspicious=False)}
     result = verify(draft, cands, overlap_scorer, threshold=0.5)
     assert result[0].status == "uncited"
@@ -172,7 +178,9 @@ def test_verify_invalid_citation_detected(overlap_scorer):
     ])
     cands = { "S1": Candidate(chunk_id=1, document_id=1, title="Doc", source_url=None,
                               page_start=23, page_end=23, section="BSCs",
-                              content="BSCs must be certified when installed, whenever they are moved and at least annually.",
+                              content=(
+                                  "BSCs must be certified when installed, "
+                                  "whenever they are moved and at least annually."),
                               suspicious=False)}
     result = verify(draft, cands, overlap_scorer, threshold=0.3)
     assert "S9" in result[0].invalid_citations

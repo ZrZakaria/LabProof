@@ -81,8 +81,8 @@ def create_app(service: LabProofService | None = None) -> FastAPI:
                 "GROUP BY d.id ORDER BY d.id").fetchall()
 
     @app.post("/api/documents", response_model=IngestOut, status_code=201)
-    def upload_document(request: Request, file: UploadFile = File(...), title: str = Form(...),
-                        source_url: str | None = Form(None), license: str | None = Form(None)):
+    def upload_document(request: Request, file: UploadFile = File(...), title: str = Form(...),  # noqa: B008
+                        source_url: str | None = Form(None), license: str | None = Form(None)):  # noqa: B008
         s = svc(request)
         if file.content_type not in {"application/pdf", "application/octet-stream"}:
             raise HTTPException(415, "Only PDF files are accepted")

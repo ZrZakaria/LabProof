@@ -10,8 +10,8 @@ from typing import Any
 from app.eval.metrics import (
     RecalledRef,
     hit_at_k,
-    recall_at_k,
     percentile,
+    recall_at_k,
     reciprocal_rank,
     safe_mean,
 )
