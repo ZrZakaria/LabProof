@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "labproof"
+version = "0.1.0"
+description = "Evidence-checked RAG assistant for laboratory safety and quality procedures."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Zakaria Zaouri" }]
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "pydantic>=2.10",
+    "pydantic-settings>=2.7",
+    "psycopg[binary]>=3.2",
+    "psycopg-pool>=3.2",
+    "httpx>=0.28",
+    "pypdf>=5.0",
+    "python-multipart>=0.0.12",
+    # ML runtimes (CPU-only torch wheel). Kept optional-ish but installed for the pipeline.
+    "torch>=2.6",
+    "transformers>=4.40",
+    "sentence-transformers>=4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.6",
+    "pytest-postgresql>=5.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*", "eval", "scripts*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]

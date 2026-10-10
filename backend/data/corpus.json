@@ -1,0 +1,29 @@
+{
+  "sources": [
+    {
+      "key": "osha3404",
+      "title": "OSHA 3404: Laboratory Safety Guidance",
+      "filename": "osha3404.pdf",
+      "url": "https://www.osha.gov/sites/default/files/publications/OSHA3404LABORATORY-SAFETY-GUIDANCE.pdf",
+      "license": "Public domain (US government work)",
+      "pages": 52
+    },
+    {
+      "key": "bmbL6",
+      "title": "CDC/NIH Biosafety in Microbiological and Biomedical Laboratories, 6th edition",
+      "filename": "bmbl6.pdf",
+      "url": "https://www.cdc.gov/labs/bmbl/index.html",
+      "license": "Public domain (US government work)",
+      "pages": 604
+    },
+    {
+      "key": "who_lbm4",
+      "title": "WHO Laboratory Biosafety Manual, 4th edition",
+      "filename": "who_lbm4.pdf",
+      "url": "https://www.who.int/publications/i/item/9789240011311",
+      "license": "CC BY-NC-SA 3.0 IGO — non-commercial use only; not redistributed",
+      "pages": 160
+    }
+  ],
+  "notes": "PDFs are downloaded to data/corpus/ and are git-ignored. The WHO manual is non-commercial: never redistribute it, only run LabProof against it locally."
+}

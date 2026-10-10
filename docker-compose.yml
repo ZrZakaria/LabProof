@@ -1,0 +1,52 @@
+# LabProof: local, zero-cost RAG assistant for laboratory procedures.
+# Ollama stays native on the host (models are large and GPU-less).
+services:
+  db:
+    image: pgvector/pgvector:pg18-trixie
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: labproof
+      POSTGRES_PASSWORD: labproof
+      POSTGRES_DB: labproof
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./infra/init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U labproof -d labproof"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      LABPROOF_DATABASE_URL: postgresql://labproof:labproof@db:5432/labproof
+      LABPROOF_OLLAMA_URL: http://host.docker.internal:11434
+      LABPROOF_CORS_ORIGINS: http://localhost:8080
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/data:/app/data
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_started
+    ports:
+      - "8080:80"
+
+volumes:
+  db_data:

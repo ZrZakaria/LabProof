@@ -1,0 +1,43 @@
+{
+  "id": "q001",
+  "lang": "en",
+  "answerable": true,
+  "question": "How often must biological safety cabinets be certified?",
+  "relevant": [{"doc": "osha3404", "pages": [23]}],
+  "key_facts": ["BSCs must be certified when installed, whenever they are moved and at least annually."],
+  "split": "dev"
+}
+{"id": "q002", "lang": "en", "answerable": true, "question": "What are the required elements of a Chemical Hygiene Plan?",
+"relevant": [{"doc": "osha3404", "pages": [8, 9]}], "key_facts": ["CHP must include standard operating procedures, criteria for control measures, provisions for employee information and training, medical consultation, and designation of a Chemical Hygiene Officer."], "split": "dev"}
+{"id": "q003", "lang": "en", "answerable": true, "question": "What is the OSHA laboratory standard and what does it require?",
+"relevant": [{"doc": "osha3404", "pages": [3, 4, 5]}], "key_facts": ["29 CFR 1910.1450 requires a Chemical Hygiene Plan, employee training, exposure monitoring, medical surveillance, and a Chemical Hygiene Officer."], "split": "dev"}
+{"id": "q004", "lang": "en", "answerable": true, "question": "What personal protective equipment is required for laboratory work with hazardous chemicals?",
+"relevant": [{"doc": "osha3404", "pages": [12, 13]}], "key_facts": ["Eye protection, gloves, lab coats, closed-toe shoes, and respiratory protection when needed."], "split": "dev"}
+{"id": "q005", "lang": "en", "answerable": true, "question": "How should chemical waste be segregated and disposed of in the laboratory?",
+"relevant": [{"doc": "osha3404", "pages": [18, 19]}], "key_facts": ["Separate by hazard class, label containers, use secondary containment, follow institutional procedures."], "split": "dev"}
+{"id": "q006", "lang": "en", "answerable": true, "question": "What are the requirements for laboratory ventilation and fume hoods?",
+"relevant": [{"doc": "osha3404", "pages": [14, 15]}], "key_facts": ["General dilution ventilation is not enough for hazardous chemicals; fume hoods must be certified annually and used with the sash at the marked position."], "split": "dev"}
+{"id": "q007", "lang": "en", "answerable": true, "question": "How should compressed gas cylinders be stored and handled?",
+"relevant": [{"doc": "osha3404", "pages": [20]}], "key_facts": ["Secure upright, cap when not in use, separate oxidizers from flammables, use proper regulators."], "split": "dev"}
+{"id": "q008", "lang": "en", "answerable": true, "question": "What are the biosafety levels and their containment requirements?",
+"relevant": [{"doc": "osha3404", "pages": [24, 25, 26]}], "key_facts": ["BSL-1 to BSL-4 with increasing containment; BSL-2 requires BSCs, restricted access, and autoclaving; BSL-3 requires controlled access, directional airflow, and BSCs for all manipulations."], "split": "dev"}
+{"id": "q009", "lang": "en", "answerable": true, "question": "What are the requirements for emergency eyewash and shower stations?",
+"relevant": [{"doc": "osha3404", "pages": [16, 17]}], "key_facts": ["Must be within 10 seconds travel time, provide 15 minutes of tepid water, inspected weekly."], "split": "dev"}
+{"id": "q010", "lang": "en", "answerable": true, "question": "How should laboratory personnel be trained under the OSHA laboratory standard?",
+"relevant": [{"doc": "osha3404", "pages": [10, 11]}], "key_facts": ["Before initial assignment, when new hazards are introduced, and refresher training; must cover CHP, detection methods, protective measures, and emergency procedures."], "split": "dev"}
+{"id": "q011", "lang": "fr", "answerable": true, "question": "À quelle fréquence les enceintes de sécurité biologique doivent-elles être certifiées?",
+"relevant": [{"doc": "osha3404", "pages": [23]}], "key_facts": ["BSCs must be certified when installed, whenever they are moved and at least annually."], "split": "dev"}
+{"id": "q012", "lang": "fr", "answerable": true, "question": "Quels sont les éléments requis d'un plan d'hygiène chimique?",
+"relevant": [{"doc": "osha3404", "pages": [8, 9]}], "key_facts": ["CHP must include SOPs, criteria for controls, employee info/training, medical consultation, and a Chemical Hygiene Officer."], "split": "dev"}
+{"id": "q013", "lang": "fr", "answerable": false, "question": "Quelle est la concentration maximale autorisée de formaldéhyde dans l'air du laboratoire?",
+"relevant": [], "key_facts": [], "split": "dev"}
+{"id": "q014", "lang": "en", "answerable": false, "question": "What is the maximum permissible noise level in decibels for a laboratory centrifuge?",
+"relevant": [], "key_facts": [], "split": "dev"}
+{"id": "q015", "lang": "en", "answerable": false, "question": "How many fire extinguishers are required per 100 square meters of lab space?",
+"relevant": [], "key_facts": [], "split": "dev"}
+{"id": "q016", "lang": "fr", "answerable": false, "question": "Quelle est la procédure exacte pour neutraliser un déversement d'acide fluorhydrique?",
+"relevant": [], "key_facts": [], "split": "dev"}
+{"id": "q017", "lang": "fr", "answerable": false, "question": "L'ISO 17025 exige-t-elle un système de gestion de la qualité spécifique pour les laboratoires d'analyses médicales?",
+"relevant": [], "key_facts": [], "split": "dev"}
+{"id": "q018", "lang": "en", "answerable": true, "question": "What are the requirements for handling carcinogens in the laboratory?",
+"relevant": [{"doc": "osha3404", "pages": [21, 22]}], "key_facts": ["Designated areas, restricted access, decontamination procedures, medical surveillance, and specific PPE for regulated carcinogens."], "split": "dev"}
