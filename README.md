@@ -89,3 +89,21 @@ only from my own runs.
 
 MIT for this code. Corpus documents keep their own licences (public domain for
 OSHA/BMBL; CC BY-NC-SA 3.0 IGO for the WHO manual — non-commercial, not redistributed).
+## v0.1 - MVP Complete (Milestone M11)
+
+**Status**: CI passing ✅ | Tag: `v0.1` | Date: 2026-10-10
+
+### What works:
+- Backend API (FastAPI) with hybrid retrieval, reranking, NLI verification
+- Angular 22 frontend with Ask + Documents pages
+- Unit tests: 31 passing (integration tests run locally)
+- CI pipeline passing (unit tests only, coverage 54%)
+
+### Next (M14):
+- Ingest corpus (OSHA 3404, BMBL 6, WHO LBM4) — run overnight
+- Run evaluation on golden set
+- Docker Compose full stack test
+- Record demo video
+- Fill results table with real measurements
+- Tag `v1.0`
+
