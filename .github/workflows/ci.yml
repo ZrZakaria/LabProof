@@ -40,7 +40,7 @@ jobs:
 
       - name: Install CPU torch
         run: |
-          uv pip install --index-url https://download.pytorch.org/whl/cpu torch
+          pip install --index-url https://download.pytorch.org/whl/cpu torch
 
       - name: Install backend deps
         working-directory: backend
