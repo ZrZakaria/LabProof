@@ -36,3 +36,30 @@
 
 ### Interview sentence I could say:
 "LabProof is a zero-cost RAG assistant for lab safety procedures. It uses hybrid pgvector + full-text search with RRF, cross-encoder reranking, schema-constrained generation, and independent NLI verification per sentence. When the evidence isn't there, it refuses instead of guessing."
+## 2026-10-10 — M13: Angular 22 Frontend
+
+### Built:
+- Angular 22 standalone components with signals
+- Ask page: question form, colored sentence verification (green=supported, orange=unsupported, red=uncited), clickable citations panel with snippets
+- Documents page: upload PDF, list documents with delete, stats panel
+- API service with typed interfaces matching backend models
+- Dev proxy to backend (`/api` → `localhost:8000`)
+- Build passes, dev server runs with hot reload
+
+### Key concepts:
+- **Signals for reactive state**: `signal()` for loading/error/response, `computed()` for derived state
+- **New control flow**: `@if` / `@for` instead of `*ngIf` / `*ngFor`
+- **Citation panel**: Clicking a citation ID highlights the source snippet
+- **Color + text legend**: Accessibility requirement — status is never color-only
+
+### Tested:
+- PDF upload works (some PDFs need text layer; scanned PDFs fail with clear error)
+- Question answering works with verified answers showing green sentences
+- Citations clickable and show source snippets
+
+### Still unclear:
+- Why some PDFs fail upload (text extraction issues - need OCR for scanned PDFs)
+- Optimal chunk size for real corpus (current 1200 chars may be too small for some sections)
+
+### Interview sentence I could say:
+"The frontend uses Angular 22 signals and new control flow. It shows sentence-level verification: green means the NLI model confirmed the source entails the claim; orange means the source doesn't support it; red means no valid citation. Users can click citations to see the exact source text."

@@ -27,3 +27,10 @@
 3. How much does the contextual prefix (title | section) actually help retrieval? (Ablation E5)
 4. What is the latency breakdown on an 8-core laptop vs the 2 vCPU sandbox?
 5. Can we reduce reranker candidates from 30 to 10 without losing MRR?
+## M13 Frontend
+| Topic | Question | Plan |
+|-------|----------|------|
+| PDF upload failures | Why do some PDFs fail with "No extractable text"? | Likely scanned PDFs without text layer; need OCR (Docling or Tesseract) |
+| Accessibility | Color-only status indicators fail WCAG | Already fixed: added `title` attribute and text legend in UI |
+| Angular signals vs RxJS | When to use signals vs Observables? | Signals for local component state; Observables for HTTP streams |
+| Performance | Build bundle size 61KB gzipped — acceptable? | Yes, well under 500KB budget; lazy-load if needed later |
