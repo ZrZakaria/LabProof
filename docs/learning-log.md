@@ -63,3 +63,36 @@
 
 ### Interview sentence I could say:
 "The frontend uses Angular 22 signals and new control flow. It shows sentence-level verification: green means the NLI model confirmed the source entails the claim; orange means the source doesn't support it; red means no valid citation. Users can click citations to see the exact source text."
+
+## 2026-10-10 — M0-M11: Backend Pipeline Complete + M13 Frontend
+
+### Built:
+- Complete RAG backend pipeline: hybrid retrieval (pgvector + tsvector + RRF), cross-encoder reranking, schema-constrained generation, NLI verification, relevance gate
+- Angular 22 frontend with teal palette, sidebar navigation, Ask page (question form, colored sentence verification, citation panel), Documents page (upload with auto-fill title, file size, list with delete)
+- 37 unit tests passing, CI passing
+- Corpus ingestion scripts ready
+
+### Key concepts:
+- **Hybrid retrieval + RRF**: Combines semantic and keyword search without score calibration
+- **Relevance gate**: Abstains before LLM call if no relevant evidence
+- **NLI verification**: Independent multilingual model checks sentence-level entailment
+- **Auto-fill title**: PDF filename (minus .pdf) auto-populates title field
+- **CI without DB**: Unit tests only in CI (integration tests run locally)
+
+### Milestone Review (M0-M11):
+1. **Recall**: Built end-to-end RAG pipeline with evidence-checked answers
+2. **Questions**: Why RRF? Why NLI over LLM-judge? Why pgvector?
+3. **Mini-experiment**: Deleting tsvector index slows keyword search; semantic search still works
+4. **Interview answer**: "Layered verification: relevance gate → schema-constrained citations → NLI verification → measured groundedness"
+
+### Still unclear:
+- Optimal reranker threshold for French vs English
+- Real PDF ingestion time for BMBL (604 pages)
+- NLI verifier precision on numerical claims
+
+### Interview sentence:
+"LabProof is a zero-cost RAG assistant for lab safety. It retrieves with hybrid pgvector+tsvector, reranks with cross-encoder, generates with schema-constrained JSON, and verifies each sentence with multilingual NLI. When evidence is missing, it abstains."
+
+### Resume Checkpoint R3 reached (v0.1 tagged):
+Can now apply with honest status in README.
+
