@@ -61,10 +61,19 @@ def rrf_fuse(rankings: dict[str, list[dict]], k: int = 60) -> list[Candidate]:
     by_id: dict[int, Candidate] = {}
     for name, rows in rankings.items():
         for rank, row in enumerate(rows, start=1):
-            cand = by_id.get(row["chunk_id"])
-            if cand is None:
-                cand = Candidate(**row)
-                by_id[row["chunk_id"]] = cand
+            # row can be a dict (from DB) or a Candidate (from tests)
+            if isinstance(row, Candidate):
+                chunk_id = row.chunk_id
+                cand = by_id.get(chunk_id)
+                if cand is None:
+                    cand = row
+                    by_id[chunk_id] = cand
+            else:
+                cand = by_id.get(row["chunk_id"])
+                if cand is None:
+                    cand = Candidate(**row)
+                chunk_id = row["chunk_id"]
+                by_id[chunk_id] = cand
             cand.ranks[name] = rank
             cand.rrf_score += 1.0 / (k + rank)
     return sorted(by_id.values(), key=lambda x: x.rrf_score, reverse=True)

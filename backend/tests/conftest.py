@@ -1,8 +1,7 @@
 """Pytest fixtures with deterministic fakes for unit tests."""
 import pytest
 
-from app.llm.ollama_client import ChatModel, Embedder, LLMError
-from app.models import DraftAnswer, DraftSentence
+from app.llm.ollama_client import ChatModel, Embedder
 from app.retrieval.rerank import Reranker
 from app.retrieval.search import Candidate
 from app.verification.nli import EntailmentScorer
@@ -83,6 +82,7 @@ class OverlapScorer:
 
 # Import json at module level for FakeLLM
 import json
+
 
 @pytest.fixture
 def fake_embedder() -> Embedder:

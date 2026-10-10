@@ -3,10 +3,10 @@
 If a primary URL fails, we try an Internet Archive copy. This script is
 idempotent: running it twice leaves the files as they are.
 """
-import os
 import hashlib
-from urllib.request import urlopen, Request
+import os
 from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
 # URLs from corpus.json
 SOURCES = [

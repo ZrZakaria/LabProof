@@ -7,15 +7,20 @@ import time
 from datetime import datetime
 from typing import Any
 
+from app.eval.metrics import (
+    RecalledRef,
+    hit_at_k,
+    recall_at_k,
+    percentile,
+    reciprocal_rank,
+    safe_mean,
+)
+
 from app.config import get_settings
 from app.db import Database
-from app.eval.metrics import (RecalledRef, abstention_scores, hit_at_k, percentile,
-                              reciprocal_rank, safe_mean)
 from app.llm.ollama_client import OllamaClient
 from app.retrieval.rerank import CrossEncoderReranker, NoopReranker
 from app.retrieval.search import retrieve
-from app.service import LabProofService
-from app.verification.nli import NLIScorer
 
 
 def load_golden(path: str, split: str | None) -> list[dict]:

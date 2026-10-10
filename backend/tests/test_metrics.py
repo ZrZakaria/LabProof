@@ -1,23 +1,28 @@
 """Tests for eval metrics module."""
-import pytest
-from app.eval.metrics import (RecalledRef, hit_at_k, recall_at_k,
-                              reciprocal_rank, abstention_scores, percentile)
+from eval.metrics import (
+    RetrievedRef,
+    abstention_scores,
+    hit_at_k,
+    percentile,
+    recall_at_k,
+    reciprocal_rank,
+)
 
 
 def test_hit_at_k():
-    refs = [RecalledRef("osha3404", 23, 23)]
+    refs = [RetrievedRef("osha3404", 23, 23)]
     rel = [{"doc": "osha3404", "pages": [23]}]
     assert hit_at_k(refs, rel, 5) == 1.0
 
 
 def test_recall_at_k():
-    refs = [RecalledRef("osha3404", 20, 25)]
+    refs = [RetrievedRef("osha3404", 20, 25)]
     rel = [{"doc": "osha3404", "pages": [23, 24]}]
     assert recall_at_k(refs, rel, 5) == 1.0
 
 
 def test_reciprocal_rank():
-    refs = [RecalledRef("osha3404", 1, 1), RecalledRef("osha3404", 23, 23)]
+    refs = [RetrievedRef("osha3404", 1, 1), RetrievedRef("osha3404", 23, 23)]
     rel = [{"doc": "osha3404", "pages": [23]}]
     assert reciprocal_rank(refs, rel) == 0.5
 

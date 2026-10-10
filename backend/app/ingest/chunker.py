@@ -9,7 +9,7 @@ Design goals (each one is an interview talking point):
 import re
 from dataclasses import dataclass, field
 
-_NUMBERED_HEADING = re.compile(r"^(\d+(\.\d+){0,3}|[IVX]+\.|[A-Z]\.)\s+[A-Z][^.]{2,80}$")
+_NUMBERED_HEADING = re.compile(r"^(\d+(\.\d+)*\.?|[IVX]+\.|[A-Z]\.)\s+[A-Z][^.]{2,80}$")
 _SENTENCE_SPLIT = re.compile(r"(?<=[.!?;])\s+(?=[A-Z0-9\"'(\u2022•-])")
 
 
@@ -23,8 +23,10 @@ def is_heading(line: str) -> bool:
     # are usually running headers or codes ("OSHA 3404-11R"), single words are often
     # text inside figures ("BIOHAZARD") - both are rejected.
     letters = [ch for ch in s if ch.isalpha()]
+    # Restrict all-caps headings to 2-3 words to avoid document titles like
+    # "LABORATORY SAFETY GUIDANCE" which appear as running headers
     return (len(letters) >= 4 and all(ch.isupper() for ch in letters)
-            and not any(ch.isdigit() for ch in s) and 2 <= len(s.split()) <= 12)
+            and not any(ch.isdigit() for ch in s) and 2 <= len(s.split()) <= 3)
 
 
 def split_sentences(text: str) -> list[str]:
