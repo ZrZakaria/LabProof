@@ -17,10 +17,11 @@
 | M9 | `service.py` | Groundedness calculation excludes "unverified" — is this correct? | Review definition with human audit |
 | M11 | `main.py` | Route handlers are `def` not `async def` — why? | CPU-heavy inference runs in worker thread, doesn't block event loop |
 | M13 | Angular frontend | Not built yet | M13 milestone |
-| M14 | Docker Compose full stack | **DONE 2026-10-11**: `docker compose up -d` — db + api + web all up; /ask works end-to-end through nginx proxy | — |
-| M13 | `ask.component.ts` | Review question skipped at session start: why is sentence status never color-only, and which accessibility rule does that satisfy? | Answer: WCAG 1.4.1 (Use of Color) — status is color + icon/text; revisit at next checkpoint |
+| M14 | Docker Compose full stack | **DONE 2026-10-11**: `docker compose up -d` — db + api + web all up; /ask works end-to-end through nginx proxy. Reranker now enabled by default (`BAAI/bge-reranker-base`, lazy-loaded). | — |
+| M14 | `styles.css` | Buttons updated: larger radius (14px), gradient primary/danger, smoother hover lift, better disabled states | — |
 | M14 | `rerank.py` | NoopReranker scores 0.0 when reranker disabled → gate always abstains. Should it fall back to the RRF score (normalized) instead, so the gate stays meaningful without the 2.5 GB reranker? | Decide before demo video; affects what the demo shows |
-| M14 | `search.py` | Param ordering with dynamic WHERE clauses (query text vs filter ids) — two different clause shapes (WHERE vs AND) for dense vs FTS | Keep in mind if adding more filters |
+| M14 | `service.py` | Reranker now lazy-loaded (`@property`) to avoid blocking container startup — model loads on first `/ask` call | — |
+| General | Docker HF cache | Volume `hf_cache` stores downloaded models between rebuilds; set both `HF_HOME` and `TRANSFORMERS_CACHE` env vars | Keep this pattern for any new model |
 | M14 | GitHub Actions retrieval-eval.yml | Quality gate on hit@5 — baseline not yet measured | Set after M5 evaluation run |
 | General | Calibration | All thresholds (rerank gate, NLI entailment, abstention) need dev-split calibration | Week 4 calibration session |
 
