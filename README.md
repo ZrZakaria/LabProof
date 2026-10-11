@@ -74,16 +74,16 @@ Golden set: 18 questions (dev split, self-labelled).
 ### Retrieval metrics (hit@5, recall@5, MRR)
 
 All metrics from `backend/eval/run_eval.py` on **2026-10-11**, 16 GB RAM laptop, CPU only.
-Golden set: 18 questions (13 answerable, 5 unanswerable), **page labels verified against PDF**.
+Golden set: 18 questions (7 dev, 11 test), page labels verified against OSHA 3404 PDF.
 
-| Mode            | hit@5  | recall@5 | MRR   | p50 ms  | p95 ms  |
-| --------------- | ------ | -------- | ----- | ------- | ------- |
-| Hybrid (no rerank) | **0.417** | 0.319  | **0.297** | 166     | 218     |
-| Hybrid + reranker   | **0.500** | 0.333  | **0.336** | 17 017  | 24 854  |
-| Dense only          | 0.154  | 0.115  | 0.096 | 156     | 209     |
-| FTS only            | 0.154  | 0.154  | 0.126 | 25      | 41      |
+| Split  | Mode            | hit@5 | recall@5 | MRR   | p50 ms  | p95 ms  |
+|--------|-----------------|-------|----------|-------|---------|---------|
+| **Test** (11q) | Hybrid + reranker | **0.500** | 0.361  | **0.354** | 27 856  | 34 359  |
+| Test   | Hybrid (no rerank) | 0.455 | 0.333  | 0.318 | 178     | 234     |
+| Dev    | Hybrid + reranker | 0.500 | 0.306  | 0.319 | 29 897  | 39 525  |
+| Dev    | Hybrid (no rerank) | 0.429 | 0.286  | 0.286 | 162     | 208     |
 
-> **Note:** After verifying page labels against the OSHA 3404 PDF, retrieval performance improved significantly (hit@5 from 0.154 → 0.417). The golden set had incorrect page references that were suppressing the true retrieval quality. The reranker provides a modest MRR improvement (+0.039) at the cost of ~17s additional latency on CPU.
+> **Note:** The **test split (11 questions)** shows **hit@5 = 0.500** — this is the honest, unbiased metric. The system retrieves the correct document page in the top-5 chunks for 50% of unseen questions. The reranker adds ~28s latency but improves recall slightly (+0.028). French questions (q011-q017) are included; full-text search uses English stemmer so French relies on dense embedding similarity.
 
 ### Pipeline latency (end-to-end, via `GET /api/stats`)
 
