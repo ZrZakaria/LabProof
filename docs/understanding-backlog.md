@@ -24,7 +24,7 @@
 | General | Docker HF cache | Volume `hf_cache` stores downloaded models between rebuilds; set both `HF_HOME` and `TRANSFORMERS_CACHE` env vars | Keep this pattern for any new model |
 | M14 | GitHub Actions retrieval-eval.yml | Quality gate on hit@5 — baseline not yet measured | Set after M5 evaluation run |
 | General | Calibration | All thresholds (rerank gate, NLI entailment, abstention) need dev-split calibration | Week 4 calibration session |
-| M14 | Golden set labels | **VERIFIED 2026-10-11**: 7 of 18 questions had incorrect page numbers; hit@5 improved from 0.154 → 0.500 after fix | Keep this verification process for future questions |
+| M14 | Golden set labels | **VERIFIED 2026-10-11**: 7 of 18 questions had incorrect page numbers; hit@5 improved from 0.154 → 0.500 after fix. Created dev/test split (7/11). | — |
 
 ## Questions for later deep dives:
 1. Why does the NLI model score "Biosafety cabinets must be certified every five years" at 0.375 vs "at least once a year" at 0.5 against the same premise?
