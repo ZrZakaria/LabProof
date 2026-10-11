@@ -96,3 +96,30 @@
 ### Resume Checkpoint R3 reached (v0.1 tagged):
 Can now apply with honest status in README.
 
+## 2026-10-11 — M14: Docker Compose full stack, UI overhaul, v1.0
+
+### Built:
+- Full Docker Compose stack working: `db` (pgvector/pg18), `api` (FastAPI, CPU-only torch), `web` (nginx serving Angular 22 build, proxies /api → api:8000)
+- Frontend overhaul: Trust Blue/Orange design tokens, Plus Jakarta Sans, glass cards, mobile sidebar + hamburger, toast service, skeleton loaders, drag-drop upload
+- /ask source filtering: per-document checkboxes → `document_ids` in AskRequest → SQL `IN (...)` filter in dense + FTS search
+- `force_answer` flag: bypasses the relevance gate (needed because NoopReranker scores 0.0 < 0.05 → always abstain)
+- Dockerfile fixed to install CPU torch wheel (`--index-url https://download.pytorch.org/whl/cpu torch==2.6.0`) — the default PyPI index pulled the 2.8 GB CUDA stack
+- README updated with measured stats (p95 21.2s, 2,113 chunks, 156 queries); tag `v1.0` pushed
+
+### Key concepts:
+- **SQL placeholder order**: psycopg binds %s in order of appearance — the FTS query text placeholder sits inside the CROSS JOIN, before the document filter placeholders, so the param list must be `[query, *filter_ids, limit]`, not `[*filter_ids, query, limit]`
+- **Two different WHERE clause shapes**: dense_search gets `WHERE c.document_id IN (...)`; fts_search already has `WHERE c.tsv @@ qq.q` so it needs `AND c.document_id IN (...)` — one shared clause string broke one of the two
+- **CPU torch in Docker**: `torch>=2.6` from PyPI on Linux pulls CUDA wheels (~2.8 GB); pinning `torch==2.6.0+cpu` from download.pytorch.org keeps the image small
+- **Port shadowing**: a stale Docker container publishing 0.0.0.0:8000 intercepts requests before a native uvicorn on 127.0.0.1:8000 — check `netstat -ano | findstr :8000` and `docker ps -a`
+
+### Review answers (right / partly / wrong):
+- Recall question from M13 (accessibility: why not color-only): skipped → moved to understanding-backlog
+
+### Still unclear:
+- NoopReranker design: should a disabled reranker fall back to RRF score instead of 0.0 (would make abstention work without force_answer)?
+- Calibration of min_rerank_score with the real bge-reranker-v2-m3 (threshold 0.05 only makes sense with the real model)
+- Golden set has no test split (all 18 = dev); hit@5 numbers not yet trustworthy (labels not all page-verified)
+
+### Interview sentence I could say:
+"LabProof is a zero-cost local RAG for lab safety. It runs entirely on a laptop via Docker Compose: PostgreSQL + pgvector for hybrid search, Ollama for embeddings and generation, optional cross-encoder reranking and NLI verification. The Angular 22 UI shows sentence-level verification, lets users filter by source document, and can force an answer when the relevance gate abstains."
+
