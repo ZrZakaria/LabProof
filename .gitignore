@@ -9,6 +9,7 @@ dist/
 .venv/
 venv/
 env/
+*.coverage
 
 # Ollama / models (local only, never commit)
 *.gguf
@@ -26,6 +27,7 @@ env/
 # Corpus PDFs (local only, licences restrict redistribution)
 data/corpus/*.pdf
 data/corpus/**/*.pdf
+backend/data/*.pdf
 
 # Reference guide (local study material, not public)
 docs/reference/

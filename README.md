@@ -69,12 +69,9 @@ uvicorn app.main:app --reload --port 8000
 ## Results
 
 All measurements from `backend/eval/` on **2026-10-11**, 16 GB RAM laptop, CPU only.
-Golden set: 18 questions (dev split, self-labelled).
+Golden set: 18 questions (7 dev, 11 test), page labels verified against OSHA 3404 PDF.
 
 ### Retrieval metrics (hit@5, recall@5, MRR)
-
-All metrics from `backend/eval/run_eval.py` on **2026-10-11**, 16 GB RAM laptop, CPU only.
-Golden set: 18 questions (7 dev, 11 test), page labels verified against OSHA 3404 PDF.
 
 | Split  | Mode            | hit@5 | recall@5 | MRR   | p50 ms  | p95 ms  |
 |--------|-----------------|-------|----------|-------|---------|---------|
@@ -99,9 +96,9 @@ Golden set: 18 questions (7 dev, 11 test), page labels verified against OSHA 340
 
 ### Known gaps
 
-- Abstention F1 and groundedness require a test split + verified labels — not yet available.
-- French question retrieval not separately measured (full-text uses English stemmer).
-- All metrics below are from my own runs; no benchmark numbers are invented.
+- Abstention F1 and groundedness require more unanswerable questions for balanced evaluation
+- French question retrieval not separately measured (full-text uses English stemmer)
+- All metrics below are from my own runs; no benchmark numbers are invented
 
 ## Limitations
 
@@ -149,5 +146,4 @@ OSHA/BMBL; CC BY-NC-SA 3.0 IGO for the WHO manual — non-commercial, not redist
 - French questions rely on dense search only (full-text uses English stemmer)
 - Scanned PDFs without text layer need OCR (out of scope)
 - CPU latency is high; generation dominates (~18-22s per question with reranker)
-- Golden set has 18 dev-only questions; no test split yet — abstention F1 and
-  groundedness not yet measurable
+- Golden set has 18 questions (7 dev, 11 test); abstention calibration needs more unanswerable samples
