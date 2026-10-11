@@ -1,7 +1,7 @@
 """Central configuration. Every value can be overridden with an environment
 variable (prefix LABPROOF_) or a .env file. Nothing is hard-coded elsewhere."""
-from functools import lru_cache
 import json
+from functools import lru_cache
 
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict

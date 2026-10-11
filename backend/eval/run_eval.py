@@ -11,6 +11,11 @@ from typing import Any
 # Add parent directory to path for app imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+from app.config import get_settings
+from app.db import Database
+from app.llm.ollama_client import OllamaClient
+from app.retrieval.rerank import CrossEncoderReranker, NoopReranker
+from app.retrieval.search import retrieve
 from eval.metrics import (
     RetrievedRef,
     hit_at_k,
@@ -19,12 +24,6 @@ from eval.metrics import (
     reciprocal_rank,
     safe_mean,
 )
-
-from app.config import get_settings
-from app.db import Database
-from app.llm.ollama_client import OllamaClient
-from app.retrieval.rerank import CrossEncoderReranker, NoopReranker
-from app.retrieval.search import retrieve
 
 
 def load_golden(path: str, split: str | None) -> list[dict]:

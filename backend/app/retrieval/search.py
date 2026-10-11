@@ -35,7 +35,8 @@ FROM chunks c JOIN documents d ON d.id = c.document_id
 """
 
 
-def dense_search(db: Database, query_vec: list[float], limit: int, where_clause: str = "", params: list = None) -> list[dict]:
+def dense_search(db: Database, query_vec: list[float], limit: int,
+                   where_clause: str = "", params: list = None) -> list[dict]:
     if params is None:
         params = []
     # where_clause for dense_search is "WHERE ..." or empty
@@ -92,7 +93,7 @@ def retrieve(db: Database, embedder: Embedder, question: str, mode: str = "hybri
              per_retriever: int = 30, rrf_k: int = 60, document_ids: list[int] | None = None) -> list[Candidate]:
     if mode not in {"dense", "fts", "hybrid"}:
         raise ValueError(f"unknown retrieval mode: {mode}")
-    
+
     # Build filter clauses for document filtering. dense_search expects a
     # "WHERE ..." clause; fts_search already has a WHERE and expects "AND ...".
     dense_filter = ""
@@ -103,10 +104,12 @@ def retrieve(db: Database, embedder: Embedder, question: str, mode: str = "hybri
         dense_filter = f"WHERE c.document_id IN ({placeholders})"
         fts_filter = f"AND c.document_id IN ({placeholders})"
         params.extend(document_ids)
-    
+
     rankings: dict[str, list[dict]] = {}
     if mode in {"dense", "hybrid"}:
-        rankings["dense"] = dense_search(db, embedder.embed([question])[0], per_retriever, dense_filter, params)
+        rankings["dense"] = dense_search(db, embedder.embed([question])[0],
+                                         per_retriever, dense_filter, params)
     if mode in {"fts", "hybrid"}:
-        rankings["fts"] = fts_search(db, question, per_retriever, fts_filter, params)
+        rankings["fts"] = fts_search(db, question, per_retriever,
+                                     fts_filter, params)
     return rrf_fuse(rankings, k=rrf_k)
