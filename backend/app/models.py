@@ -23,6 +23,8 @@ class AskRequest(BaseModel):
     retrieval_mode: Literal["dense", "fts", "hybrid"] | None = None
     top_k: int | None = Field(default=None, ge=1, le=10)
     verify: bool = True
+    document_ids: list[int] | None = None  # filter to specific documents
+    force_answer: bool = False  # bypass abstention gate
 
     @field_validator("question")
     @classmethod

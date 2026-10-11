@@ -3,12 +3,16 @@ import argparse
 import csv
 import json
 import os
+import sys
 import time
 from datetime import datetime
 from typing import Any
 
-from app.eval.metrics import (
-    RecalledRef,
+# Add parent directory to path for app imports
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+from eval.metrics import (
+    RetrievedRef,
     hit_at_k,
     percentile,
     recall_at_k,
@@ -58,7 +62,7 @@ def run_retrieval_eval(args: argparse.Namespace) -> dict[str, Any]:
         latency = (time.perf_counter() - t0) * 1000
         latencies.append(latency)
 
-        refs = [RecalledRef(doc_key=q["relevant"][0]["doc"],  # simplified: one doc per q
+        refs = [RetrievedRef(doc_key=q["relevant"][0]["doc"],  # simplified: one doc per q
                             page_start=c.page_start, page_end=c.page_end) for c in cands]
         h = hit_at_k(refs, q["relevant"], s.top_k)
         r = recall_at_k(refs, q["relevant"], s.top_k)

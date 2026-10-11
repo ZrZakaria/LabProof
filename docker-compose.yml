@@ -31,7 +31,7 @@ services:
     environment:
       LABPROOF_DATABASE_URL: postgresql://labproof:labproof@db:5432/labproof
       LABPROOF_OLLAMA_URL: http://host.docker.internal:11434
-      LABPROOF_CORS_ORIGINS: http://localhost:8080
+      LABPROOF_CORS_ORIGINS: '["http://localhost:8080"]'
     ports:
       - "8000:8000"
     volumes:

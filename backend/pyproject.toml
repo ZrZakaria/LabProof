@@ -20,7 +20,7 @@ dependencies = [
     "httpx>=0.28",
     "pypdf>=5.0",
     "python-multipart>=0.0.12",
-    # ML runtimes (CPU-only torch wheel). Kept optional-ish but installed for the pipeline.
+    # ML runtimes (CPU-only torch wheel from PyTorch's CPU index).
     "torch>=2.6",
     "transformers>=4.40",
     "sentence-transformers>=4.0",
@@ -51,3 +51,11 @@ addopts = "-ra"
 filterwarnings = [
     "ignore::DeprecationWarning",
 ]
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

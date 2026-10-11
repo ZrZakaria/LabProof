@@ -35,24 +35,33 @@ FROM chunks c JOIN documents d ON d.id = c.document_id
 """
 
 
-def dense_search(db: Database, query_vec: list[float], limit: int) -> list[dict]:
+def dense_search(db: Database, query_vec: list[float], limit: int, where_clause: str = "", params: list = None) -> list[dict]:
+    if params is None:
+        params = []
+    # where_clause for dense_search is "WHERE ..." or empty
     with db.conn() as c:
         return c.execute(
-            _SELECT + " ORDER BY c.embedding <=> %s::vector LIMIT %s",
-            (to_pgvector(query_vec), limit),
+            _SELECT + " " + where_clause + " ORDER BY c.embedding <=> %s::vector LIMIT %s",
+            params + [to_pgvector(query_vec), limit],
         ).fetchall()
 
 
-def fts_search(db: Database, query: str, limit: int) -> list[dict]:
+def fts_search(db: Database, query: str, limit: int, where_clause: str = "", params: list = None) -> list[dict]:
+    if params is None:
+        params = []
     # websearch_to_tsquery ANDs the terms, which is too strict for natural
     # questions, so we rewrite it as an OR query and let ts_rank_cd order results.
+    # where_clause for fts_search is "AND ..." or empty (comes after WHERE c.tsv @@ qq.q)
+    # Note: query param goes first (for the CROSS JOIN), then any filter params,
+    # then limit at the end.
     with db.conn() as c:
         return c.execute(
             _SELECT + """
-            CROSS JOIN (SELECT replace(websearch_to_tsquery('english', %s)::text, ' & ', ' | ')::tsquery AS q) qq
+            CROSS JOIN (SELECT replace(websearch_to_tsquery('english', %s::text)::text, ' & ', ' | ')::tsquery AS q) qq
             WHERE c.tsv @@ qq.q
+            """ + where_clause + """
             ORDER BY ts_rank_cd(c.tsv, qq.q) DESC LIMIT %s""",
-            (query, limit),
+            [query] + params + [limit],
         ).fetchall()
 
 
@@ -80,12 +89,24 @@ def rrf_fuse(rankings: dict[str, list[dict]], k: int = 60) -> list[Candidate]:
 
 
 def retrieve(db: Database, embedder: Embedder, question: str, mode: str = "hybrid",
-             per_retriever: int = 30, rrf_k: int = 60) -> list[Candidate]:
+             per_retriever: int = 30, rrf_k: int = 60, document_ids: list[int] | None = None) -> list[Candidate]:
     if mode not in {"dense", "fts", "hybrid"}:
         raise ValueError(f"unknown retrieval mode: {mode}")
+    
+    # Build filter clauses for document filtering. dense_search expects a
+    # "WHERE ..." clause; fts_search already has a WHERE and expects "AND ...".
+    dense_filter = ""
+    fts_filter = ""
+    params: list = []
+    if document_ids:
+        placeholders = ",".join(["%s"] * len(document_ids))
+        dense_filter = f"WHERE c.document_id IN ({placeholders})"
+        fts_filter = f"AND c.document_id IN ({placeholders})"
+        params.extend(document_ids)
+    
     rankings: dict[str, list[dict]] = {}
     if mode in {"dense", "hybrid"}:
-        rankings["dense"] = dense_search(db, embedder.embed([question])[0], per_retriever)
+        rankings["dense"] = dense_search(db, embedder.embed([question])[0], per_retriever, dense_filter, params)
     if mode in {"fts", "hybrid"}:
-        rankings["fts"] = fts_search(db, question, per_retriever)
+        rankings["fts"] = fts_search(db, question, per_retriever, fts_filter, params)
     return rrf_fuse(rankings, k=rrf_k)

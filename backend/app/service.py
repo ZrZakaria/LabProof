@@ -34,7 +34,8 @@ class LabProofService:
         t0 = time.perf_counter()
 
         cands = retrieve(self.db, self.embedder, req.question, mode=mode,
-                         per_retriever=s.candidates_per_retriever, rrf_k=s.rrf_k)
+                         per_retriever=s.candidates_per_retriever, rrf_k=s.rrf_k,
+                         document_ids=req.document_ids)
         t["retrieve"] = _ms(t0)
 
         t1 = time.perf_counter()
@@ -42,12 +43,15 @@ class LabProofService:
         t["rerank"] = _ms(t1)
 
         config = {"llm": getattr(self.llm, "llm_model", "fake"), "mode": mode, "top_k": top_k,
-                  "reranker": s.reranker_model or "none", "verify": req.verify and self.scorer is not None}
+                  "reranker": s.reranker_model or "none", "verify": str(req.verify and self.scorer is not None),
+                  "document_ids": str(req.document_ids) if req.document_ids else "all",
+                  "force_answer": str(req.force_answer)}
 
         # Relevance gate: if even the best chunk is irrelevant, abstain *before*
         # calling the LLM. Saves seconds of CPU time and prevents confident nonsense.
         best = cands[0].rerank_score if cands else None
-        if not cands or (best is not None and best < s.min_rerank_score):
+        should_abstain = not cands or (best is not None and best < s.min_rerank_score)
+        if should_abstain and not req.force_answer:
             t["total"] = _ms(t0)
             return self._finish(req, "abstained", [], cands, t, config,
                                 reason="No sufficiently relevant passage found in the indexed documents.")

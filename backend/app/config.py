@@ -1,7 +1,9 @@
 """Central configuration. Every value can be overridden with an environment
 variable (prefix LABPROOF_) or a .env file. Nothing is hard-coded elsewhere."""
 from functools import lru_cache
+import json
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -12,6 +14,17 @@ class Settings(BaseSettings):
     database_url: str = "postgresql://labproof:labproof@localhost:5432/labproof"
     ollama_url: str = "http://localhost:11434"
     cors_origins: list[str] = ["http://localhost:4200"]
+
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def parse_cors_origins(cls, v):
+        if isinstance(v, str):
+            try:
+                return json.loads(v)
+            except json.JSONDecodeError:
+                # Fallback: comma-separated
+                return [o.strip() for o in v.split(",") if o.strip()]
+        return v
 
     # --- Models (all local, all free) ----------------------------------------
     llm_model: str = "qwen3.5:4b"          # use qwen3.5:2b on 8 GB RAM laptops

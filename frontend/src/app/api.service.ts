@@ -70,7 +70,13 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  ask(question: string, options?: { retrieval_mode?: 'dense' | 'fts' | 'hybrid'; top_k?: number; verify?: boolean }): Observable<AskResponse> {
+  ask(question: string, options?: { 
+    retrieval_mode?: 'dense' | 'fts' | 'hybrid'; 
+    top_k?: number; 
+    verify?: boolean;
+    document_ids?: number[];
+    force_answer?: boolean;
+  }): Observable<AskResponse> {
     return this.http.post<AskResponse>(`${this.baseUrl}/ask`, { question, ...options });
   }
 

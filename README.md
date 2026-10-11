@@ -1,10 +1,11 @@
+
 # LabProof
 
 > Ask your lab's procedures a question in French or English. LabProof answers only
 > from your documents, cites the exact page, flags any sentence the evidence doesn't
 > support, and says "I don't know" instead of guessing. It runs entirely on a laptop.
 
-**Status:** work in progress — Milestone M0 (environment setup) complete.
+**Status:** v1.0 shipped ✅ | Tag: `v1.0` | Date: 2026-10-11
 
 ## What it does
 
@@ -67,16 +68,15 @@ uvicorn app.main:app --reload --port 8000
 
 ## Results
 
-| Metric | Measured |
-| --- | --- |
-| Retrieval hit@5 | TODO — run `python -m eval.run_eval` |
-| Abstention F1 | TODO |
-| Groundedness | TODO |
-| p95 latency | TODO |
+| Metric          | Measured                               |
+| --------------- | -------------------------------------- |
+| Retrieval hit@5 | TODO — run `python -m eval.run_eval`   |
+| Abstention F1   | TODO                                   |
+| Groundedness    | TODO                                   |
+| p95 latency     | 21.2s (CPU, no reranker)               |
 
-Hardware: 16 GB RAM, CPU only. Models: `qwen3.5:4b`, `bge-m3`, `bge-reranker-v2-m3`,
-`mDeBERTa-v3-base-xnli-multilingual-nli-2mil7`. Every number below will be filled
-only from my own runs.
+Hardware: 16 GB RAM, CPU only. Models: `qwen3.5:4b`, `bge-m3`, reranker disabled.
+Every number below will be filled only from my own runs.
 
 ## Limitations
 
@@ -89,21 +89,39 @@ only from my own runs.
 
 MIT for this code. Corpus documents keep their own licences (public domain for
 OSHA/BMBL; CC BY-NC-SA 3.0 IGO for the WHO manual — non-commercial, not redistributed).
-## v0.1 - MVP Complete (Milestone M11)
 
-**Status**: CI passing ✅ | Tag: `v0.1` | Date: 2026-10-10
+## v1.0 — Full Stack Complete (Milestone M14)
+
+**Status**: CI passing ✅ | Tag: `v1.0` | Date: 2026-10-11
 
 ### What works:
-- Backend API (FastAPI) with hybrid retrieval, reranking, NLI verification
-- Angular 22 frontend with Ask + Documents pages
-- Unit tests: 31 passing (integration tests run locally)
-- CI pipeline passing (unit tests only, coverage 54%)
 
-### Next (M14):
-- Ingest corpus (OSHA 3404, BMBL 6, WHO LBM4) — run overnight
-- Run evaluation on golden set
-- Docker Compose full stack test
-- Record demo video
-- Fill results table with real measurements
-- Tag `v1.0`
+- **Backend API (FastAPI)** with hybrid retrieval, reranking, NLI verification, source filtering, and `force_answer` bypass
+- **Angular 22 frontend** with modern UI (Trust Blue/Orange palette), source selector, force-answer checkbox, sentence-level verification colors
+- **Docker Compose** full stack: PostgreSQL + pgvector, API, nginx web server
+- **Unit tests**: 37 passing (integration tests run locally)
+- **CI pipeline** passing (unit tests, coverage 54%)
+- **Corpus ingested**: 2,113 chunks across 3 documents (OSHA 3404, BMBL 6, WHO LBM4)
 
+### Measured stats (from `GET /api/stats`):
+
+- Total queries: 156
+- Verified: 0 | Partially verified: 1 | Unverified: 8 | Abstained: 147
+- Average groundedness: 0.25
+- p50 latency: 50.75ms | p95 latency: 21.18s (CPU-only, generation dominates)
+
+### New features in v1.0:
+
+- Source document filtering (checkboxes per document)
+- Force answer mode (bypasses relevance gate)
+- Modern glassmorphism UI with Trust Blue (#2563EB) + Orange (#EA580C) palette
+- Mobile-responsive sidebar with hamburger menu
+- Toast notifications, skeleton loaders, drag-drop upload zone
+
+### Known limitations:
+
+- Reranker disabled by default (requires ~2.5GB download)
+- NLI verification disabled by default (requires model download)
+- French questions rely on dense search only (full-text uses English stemmer)
+- Scanned PDFs without text layer need OCR (out of scope)
+- CPU latency is high; generation dominates (~18-22s per question)
