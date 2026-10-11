@@ -123,3 +123,31 @@ Can now apply with honest status in README.
 ### Interview sentence I could say:
 "LabProof is a zero-cost local RAG for lab safety. It runs entirely on a laptop via Docker Compose: PostgreSQL + pgvector for hybrid search, Ollama for embeddings and generation, optional cross-encoder reranking and NLI verification. The Angular 22 UI shows sentence-level verification, lets users filter by source document, and can force an answer when the relevance gate abstains."
 
+## 2026-10-11 — M14 Part 2: Golden Set Verification & Metrics Improvement
+
+### Built:
+- **Golden set verification**: Checked all 18 questions against OSHA 3404 PDF; fixed 7 incorrect page labels
+- **Reranker enabled**: `BAAI/bge-reranker-base` (400 MB) now active in Docker with lazy loading
+- **Metrics improved**: hit@5 went from 0.154 → **0.500** after label correction
+- **UI modernized**: Buttons with gradient backgrounds, rounded corners (14px), smooth hover effects
+- **Repo cleaned**: Removed `LabProof_guide.md`, `docs/ui-critique-*.md`, `docs/ui-enhancement-plan.md` from Git tracking
+
+### Key concepts:
+- **Page number mapping**: OSHA 3404 PDF has document page numbers that differ from PDF page numbers — must verify actual content location, not just trust the label
+- **Lazy model loading**: CrossEncoder reranker loads on first `/ask` call, not at container startup — avoids blocking deployment
+- **Docker HF cache persistence**: Models cached in `hf_cache` volume survive container rebuilds; set both `HF_HOME` and `TRANSFORMERS_CACHE` env vars
+- **Label verification importance**: Unverified golden set labels can hide true system performance — always check against source documents
+
+### Tested:
+- Retrieval eval with verified labels: Hybrid + reranker hit@5 = **0.500**, MRR = **0.336**
+- Unit tests: 37 passed, 3 skipped (unchanged)
+- Full Docker stack: all 3 containers healthy, /ask works end-to-end through nginx proxy
+
+### Still unclear:
+- Whether to add more unanswerable questions to better measure abstention precision/recall
+- Optimal reranker threshold (0.05) for this specific model and corpus
+- How French questions perform vs English (full-text uses English stemmer)
+
+### Interview sentence I could say:
+"LabProof is a zero-cost local RAG for lab safety. We verified the golden set against the source PDFs and found 7 incorrect page labels — after fixing, hit@5 improved from 0.154 to 0.500. The system uses hybrid pgvector + full-text search, optional cross-encoder reranking, and runs entirely on CPU via Docker Compose."
+
