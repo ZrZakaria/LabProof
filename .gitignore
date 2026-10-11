@@ -28,6 +28,7 @@ env/
 data/corpus/*.pdf
 data/corpus/**/*.pdf
 backend/data/*.pdf
+backend/data/corpus/
 
 # Reference guide (local study material, not public)
 docs/reference/
