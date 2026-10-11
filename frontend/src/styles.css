@@ -48,12 +48,12 @@
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
   /* ── Spacing & Radius ──────────────────────────────────── */
-  --radius-xs: 4px;
-  --radius-sm: 6px;
-  --radius: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
   --radius-full: 9999px;
 
   /* ── Motion ────────────────────────────────────────────── */
@@ -288,90 +288,104 @@ select:focus-visible {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.6rem 1.25rem;
+  padding: 0.65rem 1.4rem;
   border: none;
-  border-radius: var(--radius);
+  border-radius: var(--radius-md);
   font-family: inherit;
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   cursor: pointer;
-  transition: all var(--duration-fast) var(--easing-standard);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   min-height: 44px;
   min-width: 44px;
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-base:hover:not(:disabled) {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-base:active:not(:disabled) {
   transform: translateY(0);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-base:disabled {
   cursor: not-allowed;
-  opacity: 0.6;
+  opacity: 0.5;
+  transform: none;
 }
 
 .btn-primary {
   composes: btn-base;
-  background: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
   color: #fff;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--color-primary-hover);
-  box-shadow: var(--shadow-md);
+  background: linear-gradient(135deg, var(--color-primary-hover) 0%, var(--color-primary-contrast) 100%);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
 }
 
 .btn-secondary {
   composes: btn-base;
-  background: var(--color-bg-muted);
+  background: var(--color-bg-card);
   color: var(--color-text);
-  border: 1px solid var(--color-border);
+  border: 1.5px solid var(--color-border);
+  box-shadow: none;
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: var(--color-border);
+  background: var(--color-bg-muted);
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-danger {
   composes: btn-base;
-  background: var(--color-error);
+  background: linear-gradient(135deg, var(--color-error) 0%, #dc2626 100%);
   color: #fff;
 }
 
 .btn-danger:hover:not(:disabled) {
-  background: #dc2626;
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
 }
 
 .btn-text {
   composes: btn-base;
   background: transparent;
   color: var(--color-text-dim);
+  box-shadow: none;
+  padding: 0.65rem 0.8rem;
 }
 
 .btn-text:hover:not(:disabled) {
   color: var(--color-text);
   background: var(--color-bg-muted);
+  box-shadow: none;
 }
 
 .btn-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem;
+  padding: 0.55rem;
   background: transparent;
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background var(--duration-fast) var(--easing-standard);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   min-height: 44px;
   min-width: 44px;
+  color: var(--color-text-dim);
 }
 
 .btn-icon:hover:not(:disabled) {
   background: var(--color-bg-muted);
+  color: var(--color-text);
 }
 
 /* ── Toast Container ─────────────────────────────────────── */
@@ -633,15 +647,16 @@ input[type='email'],
 input[type='password'],
 textarea,
 select {
-  padding: 0.7rem 1rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+  padding: 0.7rem 1.1rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
   font-family: inherit;
   font-size: 0.9rem;
+  font-weight: 400;
   background: var(--color-bg-card);
   color: var(--color-text);
-  transition: border-color var(--duration-fast) var(--easing-standard),
-    box-shadow var(--duration-fast) var(--easing-standard);
+  transition: border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 input[type='text']:focus,

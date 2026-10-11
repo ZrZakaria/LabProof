@@ -5,7 +5,6 @@ from app.config import Settings
 from app.db import Database
 from app.ingest.pdf_loader import EmptyDocumentError, extract_pages
 from app.models import AskRequest
-from app.retrieval.rerank import NoopReranker
 from app.service import LabProofService
 from tests.conftest import OverlapScorer
 
@@ -62,7 +61,7 @@ def service(test_settings, test_db) -> LabProofService:
         db=test_db,
         embedder=FakeEmbedder(),
         llm=TestLLM(),
-        reranker=NoopReranker(),
+        reranker_model="",
         scorer=OverlapScorer(),
     )
 
@@ -102,7 +101,7 @@ def test_ask_abstains_when_no_relevant_chunks(test_db, test_settings):
         db=test_db,
         embedder=FakeEmbedder(),
         llm=TestLLM(),
-        reranker=NoopReranker(),
+        reranker_model="",
         scorer=OverlapScorer(),
     )
     req = AskRequest(question="Unanswerable question about something else",
@@ -117,7 +116,7 @@ def test_upload_endpoint_validation(test_db, test_settings):
     from app.main import create_app
     svc = LabProofService(
         settings=test_settings, db=test_db,
-        embedder=FakeEmbedder(), llm=TestLLM(), reranker=NoopReranker(), scorer=None
+        embedder=FakeEmbedder(), llm=TestLLM(), reranker_model="", scorer=None
     )
     app = create_app(svc)
     app.state.service = svc
@@ -163,7 +162,7 @@ def test_health_endpoint(test_db, test_settings):
     from app.main import create_app
     svc = LabProofService(
         settings=test_settings, db=test_db,
-        embedder=FakeEmbedder(), llm=TestLLM(), reranker=NoopReranker(), scorer=None
+        embedder=FakeEmbedder(), llm=TestLLM(), reranker_model="", scorer=None
     )
     app = create_app(svc)
     app.state.service = svc
@@ -179,7 +178,7 @@ def test_stats_endpoint(test_db, test_settings):
     from app.main import create_app
     svc = LabProofService(
         settings=test_settings, db=test_db,
-        embedder=FakeEmbedder(), llm=TestLLM(), reranker=NoopReranker(), scorer=None
+        embedder=FakeEmbedder(), llm=TestLLM(), reranker_model="", scorer=None
     )
     app = create_app(svc)
     app.state.service = svc

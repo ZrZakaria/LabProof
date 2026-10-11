@@ -19,7 +19,7 @@ COPY eval ./eval
 COPY scripts ./scripts
 COPY data ./data
 
-RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.6.0 \
+RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.14.1 \
     && pip install --no-cache-dir -e ".[dev]"
 
 EXPOSE 8000

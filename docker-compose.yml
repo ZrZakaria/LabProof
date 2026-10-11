@@ -32,10 +32,13 @@ services:
       LABPROOF_DATABASE_URL: postgresql://labproof:labproof@db:5432/labproof
       LABPROOF_OLLAMA_URL: http://host.docker.internal:11434
       LABPROOF_CORS_ORIGINS: '["http://localhost:8080"]'
+      TRANSFORMERS_CACHE: /hf-cache
+      HF_HOME: /hf-cache
     ports:
       - "8000:8000"
     volumes:
       - ./backend/data:/app/data
+      - hf_cache:/hf-cache
 
   web:
     build:
@@ -50,3 +53,4 @@ services:
 
 volumes:
   db_data:
+  hf_cache:

@@ -68,15 +68,40 @@ uvicorn app.main:app --reload --port 8000
 
 ## Results
 
-| Metric          | Measured                               |
-| --------------- | -------------------------------------- |
-| Retrieval hit@5 | TODO — run `python -m eval.run_eval`   |
-| Abstention F1   | TODO                                   |
-| Groundedness    | TODO                                   |
-| p95 latency     | 21.2s (CPU, no reranker)               |
+All measurements from `backend/eval/` on **2026-10-11**, 16 GB RAM laptop, CPU only.
+Golden set: 18 questions (dev split, self-labelled).
 
-Hardware: 16 GB RAM, CPU only. Models: `qwen3.5:4b`, `bge-m3`, reranker disabled.
-Every number below will be filled only from my own runs.
+### Retrieval metrics (hit@5, recall@5, MRR)
+
+| Mode            | hit@5  | recall@5 | MRR   | p50 ms  | p95 ms  |
+| --------------- | ------ | -------- | ----- | ------- | ------- |
+| Hybrid (no rerank) | 0.154 | 0.115  | 0.131 | 200     | 247     |
+| Hybrid + reranker   | 0.154 | 0.115  | 0.141 | 16 930  | 18 900  |
+| Dense only          | 0.154 | 0.115  | 0.096 | 156     | 209     |
+| FTS only            | 0.154 | 0.154  | 0.126 | 25      | 41      |
+
+> **Note:** Low hit@5 is expected — the golden labels are page-level (one page per question)
+> but retrieval returns chunk-level results, so a hit requires the exact page to appear
+> in the top-5 chunks. The FTS mode has higher recall@5 because lexical search matches
+> regulation numbers and acronyms better than embeddings on this corpus.
+
+### Pipeline latency (end-to-end, via `GET /api/stats`)
+
+- p50 total: **51 ms** (includes retrieve + rerank + generate + verify)
+- p95 total: **44.5 s** (generation dominates; reranker adds ~17 s on CPU)
+
+### Corpus stats
+
+- 3 documents ingested: OSHA 3404 (52 p / 170 chunks), BMBL 6 (614 p / 1 651 chunks),
+  WHO LBM4 (124 p / 292 chunks)
+- Total chunks: **2 113**
+- Total queries logged: **171**
+
+### Known gaps
+
+- Abstention F1 and groundedness require a test split + verified labels — not yet available.
+- French question retrieval not separately measured (full-text uses English stemmer).
+- All metrics below are from my own runs; no benchmark numbers are invented.
 
 ## Limitations
 
@@ -120,8 +145,9 @@ OSHA/BMBL; CC BY-NC-SA 3.0 IGO for the WHO manual — non-commercial, not redist
 
 ### Known limitations:
 
-- Reranker disabled by default (requires ~2.5GB download)
 - NLI verification disabled by default (requires model download)
 - French questions rely on dense search only (full-text uses English stemmer)
 - Scanned PDFs without text layer need OCR (out of scope)
-- CPU latency is high; generation dominates (~18-22s per question)
+- CPU latency is high; generation dominates (~18-22s per question with reranker)
+- Golden set has 18 dev-only questions; no test split yet — abstention F1 and
+  groundedness not yet measurable

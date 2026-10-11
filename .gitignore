@@ -29,6 +29,11 @@ data/corpus/**/*.pdf
 
 # Reference guide (local study material, not public)
 docs/reference/
+LabProof_guide.md
+
+# UI design working docs (not needed in repo)
+docs/ui-critique-*.md
+docs/ui-enhancement-plan.md
 
 # Node / Angular
 node_modules/

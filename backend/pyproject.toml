@@ -23,7 +23,7 @@ dependencies = [
     # ML runtimes (CPU-only torch wheel from PyTorch's CPU index).
     "torch>=2.6",
     "transformers>=4.40",
-    "sentence-transformers>=4.0",
+    "sentence-transformers>=4.0,<6",
 ]
 
 [project.optional-dependencies]

@@ -23,8 +23,22 @@ class LabProofService:
     db: Database
     embedder: Embedder
     llm: ChatModel
-    reranker: Reranker
-    scorer: EntailmentScorer | None
+    reranker_model: str = ""                # empty = disabled; set to model id to enable
+    scorer: EntailmentScorer | None = None
+    _reranker: Reranker | None = None       # lazy-loaded on first use
+
+    @property
+    def reranker(self) -> Reranker:
+        """Load reranker lazily on first call to avoid blocking container startup."""
+        if self._reranker is None and self.reranker_model:
+            from app.retrieval.rerank import CrossEncoderReranker
+            log.info("loading reranker model %s ...", self.reranker_model)
+            self._reranker = CrossEncoderReranker(self.reranker_model)
+            log.info("reranker model loaded")
+        if self._reranker is None:
+            from app.retrieval.rerank import NoopReranker
+            self._reranker = NoopReranker()
+        return self._reranker
 
     def ask(self, req: AskRequest) -> AskResponse:
         s = self.settings

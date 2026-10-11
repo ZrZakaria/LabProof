@@ -13,7 +13,6 @@ from app.ingest.pdf_loader import EmptyDocumentError
 from app.ingest.pipeline import ingest_pdf
 from app.llm.ollama_client import LLMError, OllamaClient
 from app.models import AskRequest, AskResponse, DocumentOut, IngestOut
-from app.retrieval.rerank import CrossEncoderReranker, NoopReranker
 from app.service import LabProofService
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
@@ -28,9 +27,10 @@ def build_service(settings: Settings) -> LabProofService:
     db.init_schema()
     ollama = OllamaClient(settings.ollama_url, settings.llm_model, settings.embed_model,
                           settings.llm_num_ctx, settings.llm_timeout_s)
-    reranker = CrossEncoderReranker(settings.reranker_model) if settings.reranker_model else NoopReranker()
     scorer = NLIScorer(settings.nli_model) if settings.nli_model else None
-    return LabProofService(settings, db, ollama, ollama, reranker, scorer)
+    # reranker_model is passed as a string; the Service loads it lazily on first use
+    return LabProofService(settings, db, ollama, ollama,
+                           reranker_model=settings.reranker_model, scorer=scorer)
 
 
 def create_app(service: LabProofService | None = None) -> FastAPI:
