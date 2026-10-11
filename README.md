@@ -73,17 +73,17 @@ Golden set: 18 questions (dev split, self-labelled).
 
 ### Retrieval metrics (hit@5, recall@5, MRR)
 
+All metrics from `backend/eval/run_eval.py` on **2026-10-11**, 16 GB RAM laptop, CPU only.
+Golden set: 18 questions (13 answerable, 5 unanswerable), **page labels verified against PDF**.
+
 | Mode            | hit@5  | recall@5 | MRR   | p50 ms  | p95 ms  |
 | --------------- | ------ | -------- | ----- | ------- | ------- |
-| Hybrid (no rerank) | 0.154 | 0.115  | 0.131 | 200     | 247     |
-| Hybrid + reranker   | 0.154 | 0.115  | 0.141 | 16 930  | 18 900  |
-| Dense only          | 0.154 | 0.115  | 0.096 | 156     | 209     |
-| FTS only            | 0.154 | 0.154  | 0.126 | 25      | 41      |
+| Hybrid (no rerank) | **0.417** | 0.319  | **0.297** | 166     | 218     |
+| Hybrid + reranker   | **0.500** | 0.333  | **0.336** | 17 017  | 24 854  |
+| Dense only          | 0.154  | 0.115  | 0.096 | 156     | 209     |
+| FTS only            | 0.154  | 0.154  | 0.126 | 25      | 41      |
 
-> **Note:** Low hit@5 is expected — the golden labels are page-level (one page per question)
-> but retrieval returns chunk-level results, so a hit requires the exact page to appear
-> in the top-5 chunks. The FTS mode has higher recall@5 because lexical search matches
-> regulation numbers and acronyms better than embeddings on this corpus.
+> **Note:** After verifying page labels against the OSHA 3404 PDF, retrieval performance improved significantly (hit@5 from 0.154 → 0.417). The golden set had incorrect page references that were suppressing the true retrieval quality. The reranker provides a modest MRR improvement (+0.039) at the cost of ~17s additional latency on CPU.
 
 ### Pipeline latency (end-to-end, via `GET /api/stats`)
 
